@@ -3,16 +3,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
 const orderSchema = new mongoose.Schema({
-    table_name: {
-        type: String,
-        default: ""
-    },
-
-    restaurant_id: {
-        type: String,
-        default: ""
-    },
-
+    
     customer_name: {
         type: String,
         default: ""
@@ -21,11 +12,6 @@ const orderSchema = new mongoose.Schema({
     customer_mobile: {
         type: String,
         default: ""
-    },
-
-    head_count: {
-        type: Number,
-        default: 1
     },
 
     status: {
@@ -41,6 +27,7 @@ const orderSchema = new mongoose.Schema({
 
     item_list: [
         {
+            restaurant_id: { type: String, default: "" },
             item_name: { type: String, default: "" },
             qty: { type: Number, default: 1 },
             selling_price: { type: Number, default: 0 },

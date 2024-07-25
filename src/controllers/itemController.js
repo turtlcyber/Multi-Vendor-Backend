@@ -350,8 +350,9 @@ const getItemsByLocationOrSearchData = async (req, res) => {
                     let items = [];
                     if (latitude && longitude && restaurant.location.latitude && restaurant.location.longitude) {
                         distance = calculateDistance(latitude, longitude, restaurant.location.latitude, restaurant.location.longitude);
-                        items = await itemModel.find({}).limit(5);
                     }
+
+                    items = await itemModel.find({}).limit(5);
 
                     let itemObj = {
                         items,
@@ -459,29 +460,6 @@ const getItemsByLocationOrSearchData = async (req, res) => {
     }
 };
 
-const getItemsByLocationOrSearchData1 = async (req, res) => {
-    try {
-        let items = await itemModel.aggregate([{ $sample: { size: 10 } }]);
-
-        return res.status(200).send({
-            status: true,
-            message: "success",
-            data: items,
-        });
-    } catch (error) {
-        let metadata = {
-            stack: error.stack,
-            details: error.details || "No additional details provided",
-            timestamp: new Date().toISOString(),
-            ip: req.ip,
-            method: req.method,
-            url: req.originalUrl,
-        };
-
-        logger.error(`Error in getItemsByLocationOrSearchData API: ${error.message}`, { meta: metadata });
-        return res.status(400).send({ status: false, message: error.message });
-    }
-};
 
 // UPDATE ITEM BY ITEM ID
 const updateItemById = async (req, res) => {
