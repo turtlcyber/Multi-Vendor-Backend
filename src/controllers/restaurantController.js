@@ -336,17 +336,17 @@ const getRestaurantById = async (req, res) => {
 // GET ALL USERS
 const getAllRestaurants = async (req, res) => {
     try {
-        let { key } = req.params;
+        // let { key } = req.params;
 
-        if (!key) {
-            return res.status(400).send({ status: false, message: "key is required" });
-        }
+        // if (!key) {
+        //     return res.status(400).send({ status: false, message: "key is required" });
+        // }
 
-        if (key !== adminSecretKey) {
-            return res.status(403).send({ status: false, message: "NOT AUTHORIZED!!!" });
-        }
+        // if (key !== adminSecretKey) {
+        //     return res.status(403).send({ status: false, message: "NOT AUTHORIZED!!!" });
+        // }
 
-        let restaurants = await restaurantModel.find({});
+        let restaurants = await restaurantModel.aggregate([{ $sample: { size: 10 } }]);
 
         return res.status(200).send({
             status: true,

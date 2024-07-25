@@ -20,7 +20,7 @@ router.post("/api/v1/authenticateRestaurant", authenticateAdmin);
 router.get("/api/v1/viewRestaurant/:userId", getRestaurantById);
 
 // GET ALL USERS
-router.get("/api/v1/restaurant/:key", getAllRestaurants);
+router.get("/api/v1/getAllRestaurants", getAllRestaurants);
 
 // GET RESTAURANTS BY LOCATION OR ADDRESS
 router.get("/api/v1/getRestaurantByLocation/:BY_LOCATION?/:BY_ADDRESS?", getRestaurantsByLocation);

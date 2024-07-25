@@ -35,6 +35,7 @@ const createOrder = async (req, res) => {
             let { item_name, qty, imgUrl, selling_price, isVeg, isTaxable } = itemData;
 
             items.push({
+                restaurant_id,
                 item_name,
                 qty,
                 imgUrl,
