@@ -1,67 +1,139 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-
 const orderSchema = new mongoose.Schema({
-    
-    customer_name: {
+
+  orderID: {
+    type: Number
+  },
+
+  customerId: {
+    type: String,
+  },
+  
+  CGST:{
+    type: Number,
+  },
+  SGST:{
+    type: Number,
+  },
+  totalProduct: {
+    type: Number
+  },
+  paymentType: {
+    type: String,
+  },
+  tax: {
+    type: Number,
+  },
+  total: {
+    type: Number,
+  },
+  grandTotal: {
+    type: Number,
+  },
+  address: {
+    type: String,
+  },
+  apartment: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
+  countryCode: {
+    type: String
+  },
+  countryName: {
+    type: String
+  },
+  post_code:{
+    type: String,
+  },
+  state_code: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+  f_name: {
+    type: String,
+  },
+  l_name: {
+    type: String,
+  },
+  mobile: {
+    type: String,
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Approved", "Rejected", "Shipped", "Completed", "Cancel"],
+    default: "Pending"
+  },
+
+  question: {
+    type: String,
+  },
+
+  feedback: {
+    type: String,
+  },
+  
+  productList: [
+    {
+      productId: {
         type: String,
-        default: ""
-    },
-
-    customer_mobile: {
+      },
+      restaurant_id: {
         type: String,
-        default: ""
-    },
-
-    status: {
-        type: String,
-        enum: ["PENDING", "PREPARING", "CANCELED", "APPROVED", "COMPLETED", "UNDEFINED"],
-        default: "UNDEFINED"
-    },
-
-    notes: {
-        type: String,
-        default: ""
-    },
-
-    item_list: [
-        {
-            restaurant_id: { type: String, default: "" },
-            item_name: { type: String, default: "" },
-            qty: { type: Number, default: 1 },
-            selling_price: { type: Number, default: 0 },
-            isTaxable: { type: Boolean },
-            imgUrl: { type: String, default: "" },
-            isVeg: { type: Boolean }
-        }
-    ],
-
-    total_items: {
+      },
+      MrpTotal: {
         type: Number,
-    },
-
-    tax: {
+      },
+      SubTotal: {
         type: Number
-    },
-
-    total: {
+      },
+      averageRating: {
         type: Number
-    },
-
-    grand_total: {
-        type: Number
-    },
-
-    question: {
+      },
+      preparing_time: {
         type: String,
-    },
-
-    feedback: {
+      },
+      cartQty: {
+        type: Number
+      },
+      description: {
         type: String,
+      },
+      isVeg: {
+        type: Boolean,
+      },
+      mrp: {
+        type: Number
+      },
+      name: {
+        type: String
+      },
+      salePrice: {
+        type: Number
+      },
+      qty: {
+        type: Number
+      },
+      skuCode: {
+        type: String,
+      },
+      thumbnail: {
+        type: String,
+      },
+      totalRatingCount: {
+        type: Number
+      }
     }
-    
-}, {timestamps: true});
+  ]
+}, { timestamps: true });
 
-
-module.exports = mongoose.model("Order", orderSchema);
+module.exports = mongoose.model('Order', orderSchema);

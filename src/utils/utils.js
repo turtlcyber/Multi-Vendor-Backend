@@ -78,6 +78,12 @@ function generateRandomNumericId(length) {
     return randomId;
 };
 
+
+function isValidStatus(value) {
+    if( ["Pending", "Approved", "Rejected", "Shipped", "Completed", "Cancel"].indexOf(value) == -1) {return false}
+    else return true
+};
+
 module.exports = {
     isValidString,
     isValidEmail,
@@ -88,6 +94,7 @@ module.exports = {
     isValidBoolean,
     isValidInteger,
     isValidGSTNumber,
+    isValidStatus,
     getCurrentIPAddress,
     generateRandomAlphaNumericID,
     generateRandomNumericId

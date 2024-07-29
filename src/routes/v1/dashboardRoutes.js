@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { getDashboard, getAllBannerImages, updateBannerImages, deleteBannerImage } = require('../../controllers/dashboard');
+const { getDashboard, getAllBannerImages, updateBannerImages, deleteBannerImage, createDashboard } = require('../../controllers/dashboard');
+
+// CREATE DASHBOARD
+router.get("/api/v1/dashboard/:customerId?", createDashboard);
 
 // GET DASHBOARD
-router.get("/api/v1/getDashboard/:userId?", getDashboard);
+router.get("/api/v1/getDashboard1/:userId?", getDashboard);
 
 // GET ALL BANNERS OF A RESTAURANT
 router.get("/api/v1/getBanners/:userId", getAllBannerImages);

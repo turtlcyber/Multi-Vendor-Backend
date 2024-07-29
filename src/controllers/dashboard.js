@@ -1,4 +1,5 @@
 const restaurantModel = require('../models/restaurantModel');
+const orderModel = require('../models/orderModel');
 const { getCurrentIPAddress } = require("../utils/utils");
 
 const uuid = require("uuid");
@@ -7,7 +8,40 @@ const fs = require("fs");
 const { port, adminSecretKey } = require("../config/config");
 const { isValidObjectId } = require("mongoose");
 const logger = require('../config/loggerConfig1');
-const { stack } = require('../routes/v1/itemRoutes');
+
+
+// CREATE DASHBOARD
+const createDashboard = async (req, res) => {
+    try {
+
+        const { customerId } = req.params;
+
+        let myOrders = null;
+        if (customerId) {
+            myOrders = await orderModel.find({ customerId });
+        };
+        
+        return res.status(200).send({
+            status: true,
+            message: "Success",
+            data: {
+                myOrders: myOrders
+            }
+        });
+    } catch (error) {
+        let metadata = {
+            stack: error.stack,
+            details: error.details || "No additional details provided",
+            timestamp: new Date().toISOString(),
+            ip: req.ip,
+            method: req.method,
+            url: req.originalUrl
+        };
+        logger.error(`Error in getDashboard API: ${error.message}`, { meta: metadata });
+        return res.status(400).send({ status: false, message: error.message });
+    }
+}
+
 
 // DASHBOARD API
 const getDashboard = async (req, res) => {
@@ -235,6 +269,7 @@ const deleteBannerImage = async (req, res) => {
 
 
 module.exports = {
+    createDashboard,
     getDashboard,
     updateBannerImages,
     deleteBannerImage,

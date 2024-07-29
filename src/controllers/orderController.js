@@ -1,64 +1,122 @@
 const { isValidObjectId } = require("mongoose");
 const orderModel = require("../models/orderModel");
 const restaurantModel = require("../models/restaurantModel");
+const customerModel = require("../models/customerModel");
 
 const uuid = require('uuid');
 const fs = require('fs');
 const path = require('path');
-let { getCurrentIPAddress } = require('../utils/utils');
+let { getCurrentIPAddress, generateRandomNumericId } = require('../utils/utils');
 const { port } = require("../config/config");
+const { isValidStatus } = require("../utils/utils");
 
 // CREATE ORDER
 const createOrder = async (req, res) => {
     try {
-        const { restaurant_id } = req.params;
+        const { customerId } = req.params;
 
-        if (!restaurant_id) {
-            return res.status(400).send({ status: false, message: "Restaurant Id is required" });
+        if (!customerId) {
+            return res.status(400).send({ status: false, message: "Customer Id Id is required" });
         };
 
-        if (!isValidObjectId(restaurant_id)) {
-            return res.status(400).send({ status: false, message: "Invalid Restaurant Id" });
+        let customer = await customerModel.findOne({ customerId });
+
+        if (!customer) {
+            return res.status(400).send({ status: false, message: "Customer not found" });
         };
 
-        let restaurant = await restaurantModel.findOne({ userId: restaurant_id });
-
-        if (!restaurant) {
-            return res.status(400).send({ status: false, message: "Restaurant not found" });
-        };
-
-        let { table_name, customer_name, customer_mobile, head_count, status, notes, item_list, total_items, tax, total, grand_total, question, feedback } = req.body;
+        let { 
+            f_name,
+            l_name,
+            email, 
+            mobile,
+            address,
+            apartment,
+            city,
+            post_code,
+            state,
+            state_code,
+            countryCode,
+            countryName,
+            productList,
+            totalProduct,
+            tax,
+            CGST,
+            SGST,
+            total,
+            grandTotal,
+            question,
+            feedback
+        } = req.body;
 
         let items = [];
 
-        for (let itemData of item_list) {
-            let { item_name, qty, imgUrl, selling_price, isVeg, isTaxable } = itemData;
+        for (let itemData of productList) {
+            let { 
+                productId, 
+                restaurant_id, 
+                MrpTotal, 
+                SubTotal, 
+                qty, 
+                isVeg, 
+                isTaxable,
+                averageRating,
+                preparing_time,
+                cartQty,
+                description,
+                mrp,
+                name,
+                salePrice,
+                skuCode,
+                thumbnail,
+                totalRatingCount
+            } = itemData;
 
             items.push({
-                restaurant_id,
-                item_name,
-                qty,
-                imgUrl,
-                selling_price,
-                isVeg,
+                productId, 
+                restaurant_id, 
+                MrpTotal, 
+                SubTotal, 
+                qty, 
+                isVeg, 
                 isTaxable,
+                averageRating,
+                preparing_time,
+                cartQty,
+                description,
+                mrp,
+                name,
+                salePrice,
+                skuCode,
+                thumbnail,
+                totalRatingCount
             });
         };
 
         let orderData = {
-            table_name,
-            customer_name,
-            customer_mobile,
-            head_count,
-            status,
-            notes,
-            item_list,
-            total_items,
+            orderID: generateRandomNumericId(10),
+            customerId,
+            f_name,
+            l_name,
+            email, 
+            mobile,
+            address,
+            apartment,
+            city,
+            post_code,
+            state,
+            state_code,
+            countryCode,
+            countryName,
+            productList,
+            totalProduct,
             tax,
+            CGST,
+            SGST,
             total,
-            grand_total,
+            grandTotal,
             question,
-            feedback,
+            feedback
         };
 
         let newOrder = await orderModel.create(orderData);
@@ -77,7 +135,16 @@ const createOrder = async (req, res) => {
 // GET ALL ORDERS
 const getAllOrders = async (req, res) => {
     try {
-        let orders = await orderModel.find();
+        let { restaurantId } = req.params;
+
+        if (!restaurantId) {
+            return res.status(400).send({
+                status: false,
+                message: "Restaurant Id is required"
+            });
+        };
+
+        let orders = await orderModel.find({ 'productList.restaurant_id': restaurantId });
 
         return res.status(200).send({
             status: true,
@@ -264,6 +331,39 @@ const deleteOrderById = async (req, res) => {
 };
 
 
+// UPDATE ORDER BY ORDERID
+const updateOrderStatus = async (req, res) => {
+    try {
+      let orderId = req.params.orderId;
+  
+      let order = await orderModel.findOne({ _id: orderId });
+  
+      if (!order) {
+        return res
+          .status(404)
+          .send({ status: false, message: "Order Not found" });
+      }
+  
+      let body = req.body;
+  
+      if ("status" in body) {
+        order.status = body.status;
+      }
+  
+      await order.save();
+      return res
+        .status(200)
+        .send({ 
+            status: true, 
+            message: "Order status updated successfully", 
+            orderStatus: status 
+        });
+    } catch (error) {
+      return res.status(500).send({ status: false, message: error.message });
+    }
+  };
+
+
 // CANCEL ORDER
 const cancelOrder = async (req, res) => {
     try {
@@ -310,6 +410,70 @@ const cancelOrder = async (req, res) => {
         return res.status(500).send({ status: false, message: error.message });
     }
 };
+
+
+// CANCEL ORDER BY ORDER ID
+const cancelOrderById = async (req, res) => {
+    try {
+      let orderId = req.params.orderId;
+  
+      let data = req.body;
+  
+      let { status, question, feedback } = data;
+  
+      let order = await orderModel.findOne({ _id: orderId });
+  
+      if (!order) {
+        return res
+          .status(404)
+          .send({ status: false, message: "Order not found" });
+      }
+  
+      if (!isValidStatus(status)) {
+        return res.status(400).send({
+          status: false,
+          message:
+            'status should be only - "Pending", "Approved", "Rejected", "Shipped", "Completed", or "Cancel"',
+        });
+      }
+  
+      if (order.status === "Cancel") {
+        return res
+          .status(400)
+          .send({ status: false, message: "This order is already cancelled" });
+      }
+
+      if (order.status === "Rejected") {
+        return res
+          .status(400)
+          .send({ status: false, message: "This order is already Rejected" });
+      }
+
+      if (status !== "Cancel" || status !== "Rejected") {
+        return res
+          .status(400)
+          .send({ status: false, message: "Order status can be only 'Cancel' or 'Rejected'" });
+      }
+  
+      let orderStatus = await orderModel.findOneAndUpdate(
+        { _id: orderId },
+        { $set: { status: status, question: question, feedback: feedback } },
+        { new: true }
+      );
+  
+      await order.save();
+  
+      return res
+        .status(200)
+        .send({
+          status: true,
+          message: "Order cancelled successfully",
+          orderStatus: status,
+        });
+    } catch (error) {
+      return res.status(500).send({ status: false, message: error.message });
+    }
+  };
 
 
 // UPDATE ORDER BY RESTAURANT
@@ -413,6 +577,8 @@ module.exports = {
     updateOrderById,
     deleteOrderById,
     cancelOrder,
+    cancelOrderById,
     updateOrderByRestaurant,
-    uploadItemImages
+    uploadItemImages,
+    updateOrderStatus
 };

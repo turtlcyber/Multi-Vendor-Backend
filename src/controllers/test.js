@@ -132,3 +132,29 @@ let obj3 = {
     "__v": "0",
     "sno": "16"
 }
+
+
+let data = {
+"_id": "66a76f306988b6c50581457b",
+"customerId": "L7VVzztqT6ZVjqdr2r6JEBAF",
+"checkin_id": "Rohit_Mon_Jul_29_2024",
+"name": "Rohit",
+"email":"rohit@gmail.com",
+"mobile":"9890890978",
+"address":"New Delhi",
+"room_number":"G-118",
+"room_type":"Delux",
+"price":"5000",
+"total_adults": 2,
+"total_kids": 2,
+"Id_type": "Aadhar Card",
+"Id_number": "7890 3455 2367",
+"vehicle_type":"Toyota Corolla",
+"vehicle_number":"DL-90 2243",
+"checkin_date": "29-07-2024",
+"orders": Array (empty),
+"createdAt": "2024-07-29T10:30:08.123+00:00",
+"updatedAt": "2024-07-29T10:30:08.123+00:00",
+"__v": 0
+}
+
