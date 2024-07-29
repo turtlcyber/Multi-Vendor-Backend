@@ -449,11 +449,13 @@ const cancelOrderById = async (req, res) => {
           .send({ status: false, message: "This order is already Rejected" });
       }
 
-      if (status !== "Cancel" || status !== "Rejected") {
+      let statusArr = ["Cancel", "Rejected"];
+
+      if (!statusArr.includes(status)) {
         return res
           .status(400)
           .send({ status: false, message: "Order status can be only 'Cancel' or 'Rejected'" });
-      }
+      };
   
       let orderStatus = await orderModel.findOneAndUpdate(
         { _id: orderId },
