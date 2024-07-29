@@ -356,7 +356,7 @@ const updateOrderStatus = async (req, res) => {
         .send({ 
             status: true, 
             message: "Order status updated successfully", 
-            orderStatus: status 
+            orderStatus: body.status
         });
     } catch (error) {
       return res.status(500).send({ status: false, message: error.message });
