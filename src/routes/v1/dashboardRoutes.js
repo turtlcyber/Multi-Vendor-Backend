@@ -7,7 +7,7 @@ const { getDashboard, getAllBannerImages, updateBannerImages, deleteBannerImage,
 router.get("/api/v1/dashboard/:customerId?", createDashboard);
 
 // GET DASHBOARD
-router.get("/api/v1/getDashboard1/:userId?", getDashboard);
+router.get("/api/v1/getDashboard/:userId", getDashboard);
 
 // GET ALL BANNERS OF A RESTAURANT
 router.get("/api/v1/getBanners/:userId", getAllBannerImages);

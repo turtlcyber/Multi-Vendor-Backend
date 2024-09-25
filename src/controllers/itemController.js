@@ -1,5 +1,6 @@
 const itemModel = require("../models/itemModel");
 const restaurantModel = require("../models/restaurantModel");
+const ratingModel = require('../models/ratingModel');
 const { calculateDistance } = require("./restaurantController");
 
 const uuid = require("uuid");
